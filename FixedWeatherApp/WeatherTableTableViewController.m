@@ -149,7 +149,7 @@
         cityCount--;
         [self.tableView deleteRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationFade];
         [self saveCities];
-//        [self saveLoadRefresh];  // TODO check if required
+//        [self saveLoadRefresh];  // TODO - check if required
     } else {
 //        NSLog(@"Unhandled editing style! %d", editingStyle);
     }

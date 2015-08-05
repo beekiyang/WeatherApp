@@ -63,7 +63,7 @@ static MenuTableViewController *sharedMenu;
     
     self.tableView.allowsSelection = NO;
     
-    NSLog(@"tempUnit = %@",_tempUnit);
+    NSLog(@"tempUnit for menu = %@",_tempUnit);
 }
 
 -(void)viewDidAppear:(BOOL)animated{
@@ -82,14 +82,13 @@ static MenuTableViewController *sharedMenu;
 -(void)viewWillDisappear:(BOOL)animated{
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     
+    //check if any changes in the manu was made
     if (currentTemp != _tempUnit) {
         _updated = YES;
     }
-    
     if (currentRefresh != _refreshWaitTime) {
         _updated = YES;
     }
-    
     if (currentCountry != [defaults boolForKey:@"countryHidden"]) {
         [defaults setBool:countrySwitch.on forKey:@"countryHidden"];
         _updated = YES;
@@ -98,10 +97,11 @@ static MenuTableViewController *sharedMenu;
 }
 
 +(MenuTableViewController *) sharedMenu{
-    if(sharedMenu == nil){
-        sharedMenu = [[MenuTableViewController alloc] init];
+    static MenuTableViewController *sharedMenu = nil;
+    @synchronized(self) {
+        if (sharedMenu == nil)
+            sharedMenu = [[self alloc] init];
     }
-    
     return sharedMenu;
 }
 
@@ -122,7 +122,7 @@ static MenuTableViewController *sharedMenu;
     NSLog(@"tempUnit \u0394 %@",_tempUnit);
 }
 
--(void)refreshToggle{ //segmented control for temperature units
+-(void)refreshToggle{ //segmented control for auto-refresh times
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     switch (refreshSeg.selectedSegmentIndex) {
         case 0:
@@ -144,7 +144,7 @@ static MenuTableViewController *sharedMenu;
     NSLog(@"Auto-Refresh Time: %i seconds",_refreshWaitTime);
 }
 
--(void)countryToggle{
+-(void)countryToggle{ // switch for hiding country name
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     if (countrySwitch.on) {
         [defaults setBool:YES forKey:@"countryHidden"];
